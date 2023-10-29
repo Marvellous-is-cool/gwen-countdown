@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Countdown Timer</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="animate.css" />
+    <style>
+      /* advent-pro-regular - latin */
+      @font-face {
+        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+        font-family: "Advent Pro";
+        font-style: normal;
+        font-weight: 400;
+        src: url("../fonts/advent-pro-v23-latin-regular.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+      }
+      /* advent-pro-800 - latin */
+      @font-face {
+        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+        font-family: "Advent Pro";
+        font-style: normal;
+        font-weight: 800;
+        src: url("../fonts/advent-pro-v23-latin-800.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+      }
+      body {
+        background: #343a40;
+        overflow: hidden;
+        font-family: "Advent Pro";
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="container d-flex align-items-center text-center text-white mt-5 mb-5 p-5 min-vh-100"
+    >
+      <h1 class="animate__animated animate__flipInX">
+        Countdown to Gwen's next birthday 🎉🎊
+      </h1>
+      <div id="countdown" class="mt-5"></div>
+    </div>
+
+    <p class="text-center text-muted">Made with 🥳 by Coolbuoy</p>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+      function updateCountdown() {
+        const endDate = new Date("2024-10-29T00:00:00Z").getTime();
+        const now = new Date().getTime();
+        const timeRemaining = endDate - now;
+
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+        document.getElementById("countdown").innerHTML = `
+                <div class="row">
+                    <div class="col-6 bg-dark text-white rounded counti text-muted d-inline animate__animated animate__pulse mb-2">${days} <span>Days</span></div>
+                    <div class="col-6 counti d-inline animate__animated mb-2">${hours} <span>Hours</span></div>
+                    <div class="col-6 counti d-inline animate__animated animate__fadeIn">${minutes} <span>Minutes</span></div>
+                    <div class="col-6 counti d-inline text-white  animate__animated animate__heartBeat"> <b class="bg-danger rounded w-100">${seconds}</b> <span>Seconds</span></div>
+                </div>
+            `;
+
+        if (timeRemaining <= 1) {
+          document.getElementById("countdown").innerHTML =
+            "Happy Birthday in advance!!";
+        }
+
+        if (timeRemaining <= 0) {
+          document.getElementById("countdown").innerHTML =
+            "Happy Birthday Gwen... Sending my address right away";
+        }
+      }
+
+      // Function to prevent scrolling
+      function preventScroll(e) {
+        e.preventDefault();
+      }
+
+      // To disable scrolling
+      document.body.addEventListener("touchmove", preventScroll, {
+        passive: false,
+      });
+      document.body.addEventListener("wheel", preventScroll, {
+        passive: false,
+      });
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    </script>
+  </body>
+</html>
