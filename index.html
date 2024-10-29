@@ -1,51 +1,180 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Countdown Timer</title>
+    <title>Birthday Countdown</title>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
-    <link rel="stylesheet" href="animate.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <style>
-      /* advent-pro-regular - latin */
-      @font-face {
-        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-        font-family: "Advent Pro";
-        font-style: normal;
-        font-weight: 400;
-        src: url("../fonts/advent-pro-v23-latin-regular.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-      }
-      /* advent-pro-800 - latin */
-      @font-face {
-        font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-        font-family: "Advent Pro";
-        font-style: normal;
-        font-weight: 800;
-        src: url("../fonts/advent-pro-v23-latin-800.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-      }
+      @import url("https://fonts.googleapis.com/css2?family=Advent+Pro:wght@400;800&display=swap");
+
+      /* Background gradient and particle style */
       body {
-        background: #343a40;
+        font-family: "Advent Pro", sans-serif;
+        background: linear-gradient(135deg, #00c6ff, #0072ff, #ff4081, #ffe853);
+        background-size: 300% 300%;
+        animation: gradientBG 8s ease infinite;
+        margin: 0;
         overflow: hidden;
-        font-family: "Advent Pro";
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      #countdown-container {
+        text-align: center;
+        z-index: 10;
+      }
+
+      .countdown-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+      }
+
+      .countdown-display {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: center;
+      }
+
+      .time-box {
+        font-size: 1.2rem;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .time-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #ffed85;
+      }
+
+      .celebrate-message {
+        display: none;
+        font-size: 3rem;
+        font-weight: 800;
+        margin-top: 20px;
+        color: #ff4081;
+      }
+
+      .cake-message {
+        display: none;
+        font-size: 1rem;
+        color: #ffed85;
+        margin-top: 10px;
+      }
+
+      /* Particle styles */
+      .particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .particle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #ffed85;
+        border-radius: 50%;
+        opacity: 0.8;
+        animation: float 5s ease-in-out infinite;
+      }
+
+      .particle:nth-child(even) {
+        background-color: #ff4081;
+      }
+
+      .particle:nth-child(3n) {
+        background-color: #00c6ff;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(100vh) translateX(0) scale(1);
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100vh) translateX(30px) scale(0.5);
+          opacity: 0;
+        }
       }
     </style>
   </head>
   <body>
-    <div
-      class="container d-flex align-items-center text-center text-white mt-5 mb-5 p-5 min-vh-100"
-    >
-      <h1 class="animate__animated animate__flipInX">
+    <div id="countdown-container">
+      <h1 class="countdown-title animate__animated animate__fadeInDown">
         Countdown to Gwen's next birthday 🎉🎊
       </h1>
-      <div id="countdown" class="mt-5"></div>
+      <div id="countdown" class="countdown-display"></div>
+      <div
+        id="celebrate"
+        class="celebrate-message animate__animated animate__zoomIn"
+      >
+        🎉🎈 Happy Birthday, Gwen! 🎈🎉
+      </div>
+      <div
+        id="cake-message"
+        class="cake-message animate__animated animate__fadeInUp"
+      >
+        Now waiting for my cake! 🎂
+      </div>
     </div>
 
-    <p class="text-center text-muted">Made with 🥳 by Coolbuoy</p>
+    <!-- Particle Effects -->
+    <div class="particles" id="particles">
+      <!-- Particles will be generated dynamically here -->
+    </div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <p
+      class="text-center text-white position-absolute w-100"
+      style="bottom: 10px"
+    >
+      Made with 🥳 by Coolbuoy
+    </p>
+
     <script>
+      function createParticles() {
+        const particleContainer = document.getElementById("particles");
+        for (let i = 0; i < 50; i++) {
+          const particle = document.createElement("div");
+          particle.classList.add("particle");
+          particle.style.left = `${Math.random() * 100}vw`;
+          particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
+          particleContainer.appendChild(particle);
+        }
+      }
+
       function updateCountdown() {
         const endDate = new Date("2024-10-29T00:00:00Z").getTime();
         const now = new Date().getTime();
@@ -61,38 +190,22 @@
         const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
         document.getElementById("countdown").innerHTML = `
-                <div class="row">
-                    <div class="col-6 bg-dark text-white rounded counti text-muted d-inline animate__animated animate__pulse mb-2">${days} <span>Days</span></div>
-                    <div class="col-6 counti d-inline animate__animated mb-2">${hours} <span>Hours</span></div>
-                    <div class="col-6 counti d-inline animate__animated animate__fadeIn">${minutes} <span>Minutes</span></div>
-                    <div class="col-6 counti d-inline text-white  animate__animated animate__heartBeat"> <b class="bg-danger rounded w-100">${seconds}</b> <span>Seconds</span></div>
-                </div>
-            `;
-
-        if (timeRemaining <= 1) {
-          document.getElementById("countdown").innerHTML =
-            "Happy Birthday in advance!!";
-        }
+          <div class="time-box"><div class="time-value">${days}</div><div>Days</div></div>
+          <div class="time-box"><div class="time-value">${hours}</div><div>Hours</div></div>
+          <div class="time-box"><div class="time-value">${minutes}</div><div>Minutes</div></div>
+          <div class="time-box"><div class="time-value">${seconds}</div><div>Seconds</div></div>
+        `;
 
         if (timeRemaining <= 0) {
-          document.getElementById("countdown").innerHTML =
-            "Happy Birthday Gwen... Sending my address right away";
+          document.getElementById("countdown").style.display = "none";
+          document.getElementById("celebrate").style.display = "block";
+          document.getElementById("cake-message").style.display = "block";
+          document.getElementById("particles").style.display = "block";
         }
       }
 
-      // Function to prevent scrolling
-      function preventScroll(e) {
-        e.preventDefault();
-      }
-
-      // To disable scrolling
-      document.body.addEventListener("touchmove", preventScroll, {
-        passive: false,
-      });
-      document.body.addEventListener("wheel", preventScroll, {
-        passive: false,
-      });
-
+      // Initialize particles and update countdown
+      createParticles();
       updateCountdown();
       setInterval(updateCountdown, 1000);
     </script>
